@@ -3,6 +3,8 @@ import { useParams, Link } from "react-router-dom";
 import { getProductById } from "../features/products/services/productService";
 import useCartStore from "../features/cart/hooks/useCartStore";
 import useWishlistStore from "../features/wishlist/hooks/useWishlistStore";
+import useCompareStore from "../features/compare/hooks/useCompareStore";
+import { Scale } from "lucide-react";
 
 export default function ProductDetailsPage() {
   const { id } = useParams();
@@ -12,6 +14,8 @@ export default function ProductDetailsPage() {
   const addToCart = useCartStore((s) => s.addToCart);
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
+  const { isInCompareList, removeFromCompareList, addToCompareList } =
+    useCompareStore();
 
   useEffect(() => {
     async function load() {
@@ -224,7 +228,7 @@ export default function ProductDetailsPage() {
               }
               className={`px-4 py-3.5 rounded-xl border-2 transition-all ${
                 isInWishlist(Number(id))
-                  ? "border-accent-500 bg-accent-50 text-accent-500"
+                  ? "border-accent-500 text-accent-500 bg-accent-400"
                   : "border-gray-200 text-gray-400 hover:border-accent-300 hover:text-accent-500"
               }`}
             >
@@ -235,6 +239,22 @@ export default function ProductDetailsPage() {
                   clipRule="evenodd"
                 />
               </svg>
+            </button>
+            <button
+              aria-label={`${isInCompareList(product.id) ? "Remove from" : "Add to"} compare list`}
+              onClick={(e) => {
+                e.preventDefault();
+                isInCompareList(product.id)
+                  ? removeFromCompareList(product.id)
+                  : addToCompareList(product);
+              }}
+              className={`px-4 py-3.5 rounded-xl border-2 transition-all ${
+                isInCompareList(product.id)
+                  ? "border-blue-600 text-blue-800 bg-blue-300"
+                  : "border-gray-200 text-gray-400 hover:text-amber-500"
+              }`}
+            >
+              <Scale className="w-5 h-5 fill-current" />
             </button>
           </div>
 

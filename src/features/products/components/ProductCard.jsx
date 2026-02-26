@@ -1,11 +1,14 @@
 import { Link } from "react-router-dom";
 import useCartStore from "../../cart/hooks/useCartStore";
 import useWishlistStore from "../../wishlist/hooks/useWishlistStore";
-
+import useCompareStore from "../../compare/hooks/useCompareStore";
+import { Scale } from "lucide-react";
 export default function ProductCard({ product }) {
   const addToCart = useCartStore((s) => s.addToCart);
   const { addToWishlist, removeFromWishlist, isInWishlist } =
     useWishlistStore();
+  const { isInCompareList, removeFromCompareList, addToCompareList } =
+    useCompareStore();
   const renderStars = (rating) => {
     const stars = [];
     const full = Math.floor(rating);
@@ -76,6 +79,7 @@ export default function ProductCard({ product }) {
         )}
         {/* Wishlist button */}
         <button
+          aria-label={`${isInWishlist(product.id) ? "Remove from" : "Add to"} wishlist`}
           onClick={(e) => {
             e.preventDefault();
             isInWishlist(product.id)
@@ -95,6 +99,23 @@ export default function ProductCard({ product }) {
               clipRule="evenodd"
             />
           </svg>
+        </button>
+        {/* Comparison button */}
+        <button
+          aria-label={`${isInCompareList(product.id) ? "Remove from" : "Add to"} compare list`}
+          onClick={(e) => {
+            e.preventDefault();
+            isInCompareList(product.id)
+              ? removeFromCompareList(product.id)
+              : addToCompareList(product);
+          }}
+          className={`absolute bottom-3 right-3 p-2 rounded-full shadow-md transition-all duration-200 ${
+            isInCompareList(product.id)
+              ? "bg-black text-yellow-400"
+              : "bg-gray-500 text-white hover:text-amber-500"
+          }`}
+        >
+          <Scale className="w-5 h-5 fill-current" />
         </button>
       </Link>
 
